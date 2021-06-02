@@ -6,15 +6,42 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let prod of products | async" (click)="prod.expanded = !prod.expanded">
+      <ion-thumbnail slot="start">
+        <ion-img [src]="prod.image"></ion-img>
+      </ion-thumbnail>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+      <ion-label class="ion-text-wrap">
+        {{ prod.title }} <br>
+        <b>{{ prod.price | currency: 'USD' }}</b>
+        <p>{{ prod.stock }} left</p>
+        <div [hidden]="!prod.expanded">
+          {{ prod.description }}
+        </div>
+      </ion-label>
+
+      <ion-row slot="end" class="ion-no-padding ion-align-items-center">
+        <ion-col size="5">
+          <ion-button (click)="addToCart($event, prod)" fill="clear">
+            <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="2">
+          {{ cart[prod.id] || 0 }}
+        </ion-col>
+        <ion-col size="5">
+          <ion-button (click)="removeFromCart($event, prod)" fill="clear" [disabled]="!cart[prod.id] || cart[prod.id] == 0">
+            <ion-icon name="remove-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openCart()" color="secondary" #myFab>
+      <ion-icon name="cart-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
